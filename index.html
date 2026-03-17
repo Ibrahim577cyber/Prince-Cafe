@@ -12,15 +12,12 @@ header{
   background:url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
   height:300px; display:flex; align-items:center; justify-content:center;
 }
-header h1{color:white;font-size:3rem;background:rgba(0,0,0,0.6);padding:15px 30px;border-radius:8px;text-align:center;}
+header h1{color:white;font-size:3rem;background:rgba(0,0,0,0.6);padding:15px 30px;border-radius:8px;}
 nav{background:#d2691e;display:flex;justify-content:center;flex-wrap:wrap;}
 nav a{color:white;padding:15px 25px;font-weight:600;text-decoration:none;}
 nav a:hover{background:#b35412;}
 section{padding:50px 20px;max-width:1100px;margin:auto;}
 section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
-.features ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:15px;}
-.features li{background:#f4e1d2;padding:12px 25px;border-radius:25px;font-weight:bold;}
-.features li:hover{background:#d2691e;color:white;cursor:pointer;}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
 .menu-card{background:#fff1e0;padding:20px;border-radius:12px;text-align:center;font-weight:500;cursor:pointer;transition:0.3s;}
 .menu-card:hover{background:#d2691e;color:white;}
@@ -28,17 +25,15 @@ section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
 .cart-count{background:white;color:#25D366;padding:2px 6px;border-radius:50%;margin-left:5px;font-weight:700;}
 .cart-modal{position:fixed;bottom:70px;right:20px;width:350px;background:white;border:1px solid #d2691e;border-radius:8px;max-height:500px;overflow-y:auto;display:none;z-index:1000;}
 .cart-item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd;align-items:center;}
+.cart-item .qty-btns{display:flex;gap:5px;align-items:center;}
+.cart-item .qty-btns button{padding:4px 8px;cursor:pointer;font-weight:bold;background:#d2691e;color:white;border:none;border-radius:4px;}
 .cart-total{padding:8px;font-weight:600;text-align:right;}
-.qty-btns{display:flex;align-items:center;gap:5px;}
-.qty-btns button{padding:4px 8px;cursor:pointer;font-weight:bold;background:#d2691e;color:white;border:none;border-radius:4px;}
-.qty-btns span{min-width:20px;text-align:center;display:inline-block;}
 .send-whatsapp{width:100%;background:#25D366;color:white;border:none;padding:8px;border-radius:5px;cursor:pointer;font-weight:600;margin-top:5px;}
 iframe{width:100%;height:350px;border:none;border-radius:10px;margin-top:20px;}
-footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:40px;}
-@media(max-width:768px){
-  .menu-grid{grid-template-columns:1fr;}
-  .features ul{flex-direction:column;align-items:center;}
+@media(min-width:1200px){
+  .menu-grid{grid-template-columns:repeat(3,1fr);}
 }
+footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:40px;}
 </style>
 </head>
 <body>
@@ -49,30 +44,18 @@ footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:
 
 <nav>
 <a href="#about">About</a>
-<a href="#order">Order Now</a>
+<a href="#menu">Order Now</a>
 <a href="#contact">Contact</a>
 </nav>
 
 <section id="about">
 <h2>About Us</h2>
 <p style="text-align:center;max-width:700px;margin:auto;">
-Prince Café is a renowned restaurant on GT Road, Hassan Abdal. Famous for BBQ, fried fish, karahi, Pakistani curries, biryani, and fresh beverages. We provide a cozy environment for families and friends.
+Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fried fish, karahi, traditional Pakistani food, and a cozy family-friendly atmosphere. We offer dine-in, takeaway, and delivery options daily.
 </p>
 </section>
 
-<section id="features">
-<h2>Why Choose Us?</h2>
-<ul class="features">
-<li>Authentic Pakistani Cuisine</li>
-<li>Fresh Ingredients</li>
-<li>Fast & Friendly Service</li>
-<li>Delivery & Takeaway</li>
-<li>Clean & Cozy Ambience</li>
-<li>Secure Payment Options</li>
-</ul>
-</section>
-
-<section id="order">
+<section id="menu">
 <h2>Click Below to Order</h2>
 <div class="menu-grid">
 <div class="menu-card" onclick="location.href='pakistani.html'">Pakistani Cuisine</div>
@@ -85,12 +68,23 @@ Prince Café is a renowned restaurant on GT Road, Hassan Abdal. Famous for BBQ, 
 </div>
 </section>
 
-<!-- CART -->
+<section id="why-choose-us">
+<h2>Why Choose Us?</h2>
+<ul style="max-width:700px;margin:auto;padding-left:20px;line-height:1.8;">
+<li>Fresh ingredients & authentic Pakistani flavors</li>
+<li>Friendly staff & cozy dining environment</li>
+<li>Fast service & reliable home delivery</li>
+<li>Variety of menu options for everyone</li>
+<li>Clean, safe, and hygienic kitchen</li>
+</ul>
+</section>
+
+<!-- Persistent Cart -->
 <div class="cart-btn">Cart <span class="cart-count">0</span></div>
 <div class="cart-modal">
   <div class="cart-items"></div>
   <div class="cart-total">Total: 0/-</div>
-  <button class="send-whatsapp">Send Order via WhatsApp</button>
+  <button class="send-whatsapp">Send Home Delivery Order via WhatsApp</button>
 </div>
 
 <section id="contact">
@@ -103,16 +97,16 @@ Prince Café is a renowned restaurant on GT Road, Hassan Abdal. Famous for BBQ, 
 </footer>
 
 <script>
-// Persistent cart
+// Load persistent cart (same across all menu pages)
 let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
 
-// Refresh cart UI
+// Update cart UI
 function refreshCartUI(){
   const cartItemsDiv = document.querySelector('.cart-items');
   cartItemsDiv.innerHTML='';
   let total=0;
   cart.forEach((i,index)=>{
-    total += i.price*i.qty || 0;
+    total += i.price*i.qty;
     cartItemsDiv.innerHTML += `
     <div class="cart-item">
       <span>${i.name} (${i.type || ''})</span>
@@ -121,65 +115,61 @@ function refreshCartUI(){
         <span>${i.qty}</span>
         <button class="plus-cart" data-index="${index}">+</button>
       </div>
-      <span>${i.price*i.qty || 0}/-</span>
+      <span>${i.price*i.qty}/-</span>
     </div>`;
   });
+
   document.querySelector('.cart-count').innerText=cart.reduce((s,i)=>s+i.qty,0);
   document.querySelector('.cart-total').innerText='Total: '+total+'/-';
   localStorage.setItem('princeCafeCart',JSON.stringify(cart));
 
-  // Add event listeners
   document.querySelectorAll('.plus-cart').forEach(btn=>{
-    btn.onclick=()=>{
-      const idx=parseInt(btn.getAttribute('data-index'));
+    btn.addEventListener('click',()=>{
+      const idx = parseInt(btn.getAttribute('data-index'));
       cart[idx].qty++;
       refreshCartUI();
-    };
+    });
   });
   document.querySelectorAll('.minus-cart').forEach(btn=>{
-    btn.onclick=()=>{
-      const idx=parseInt(btn.getAttribute('data-index'));
+    btn.addEventListener('click',()=>{
+      const idx = parseInt(btn.getAttribute('data-index'));
       cart[idx].qty--;
       if(cart[idx].qty<=0) cart.splice(idx,1);
       refreshCartUI();
-    };
+    });
   });
 }
 
-// Cart modal toggle
-document.querySelector('.cart-btn').onclick=()=>{
+// Toggle cart modal
+document.querySelector('.cart-btn').addEventListener('click',()=>{
   const m=document.querySelector('.cart-modal');
   m.style.display = (m.style.display==='none' || m.style.display==='')?'block':'none';
-};
+});
 
-// WhatsApp order (Home Delivery)
-document.querySelector('.send-whatsapp').onclick=()=>{
-  if(cart.length===0){alert('Cart empty'); return;}
-  let msg="Home Delivery Order:%0A";
+// WhatsApp order
+document.querySelector('.send-whatsapp').addEventListener('click',()=>{
+  if(cart.length===0){alert('Cart empty');return;}
+  let msg="Hello Prince Café, I want to place a Home Delivery Order:%0A";
   let total=0;
   cart.forEach(i=>{
-    const type = i.type ? i.type : '';
-    msg+=`${i.name} (${type}) x${i.qty} = ${i.price*i.qty || 0}/-%0A`;
-    total+=i.price*i.qty || 0;
+    msg += `${i.name} (${i.type || 'N/A'}) x${i.qty} = ${i.price*i.qty}/-%0A`;
+    total += i.price*i.qty;
   });
-  msg+=`Total: ${total}/-`;
+  msg += `Total: ${total}/-`;
   window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
-};
+});
 
-// Initial load
-refreshCartUI();
-</script>
+// Homepage cart sync with other pages
 function updateCartCount(){
   let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
-  let total = 0;
-
-  cart.forEach(item=>{
-    total += item.qty;
-  });
-
-  document.querySelector('.cart-count').innerText = total;
+  document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
 }
-
 updateCartCount();
+window.addEventListener("storage", updateCartCount);
+
+// Initial cart render
+refreshCartUI();
+</script>
+
 </body>
 </html>
