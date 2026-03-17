@@ -8,9 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Poppins',sans-serif;background:#fff8f0;color:#333;line-height:1.6;}
-header{background:#d2691e;color:white;height:250px;display:flex;align-items:center;justify-content:center;}
-header h1{font-size:3rem;}
-section{padding:50px 20px;max-width:1100px;margin:auto;}
+header{background:#d2691e;height:250px;display:flex;align-items:center;justify-content:center;}
+header h1{color:white;font-size:3rem;}
+nav{background:#b35412;display:flex;justify-content:center;flex-wrap:wrap;}
+nav a{color:white;padding:15px 25px;font-weight:600;text-decoration:none;}
+nav a:hover{background:#d2691e;}
+section{padding:40px 20px;max-width:1100px;margin:auto;}
 section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
 .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
 .menu-card{background:#fff1e0;padding:20px;border-radius:12px;text-align:center;font-weight:500;cursor:pointer;transition:0.3s;}
@@ -19,12 +22,10 @@ section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
 .cart-count{background:white;color:#25D366;padding:2px 6px;border-radius:50%;margin-left:5px;font-weight:700;}
 .cart-modal{position:fixed;bottom:70px;right:20px;width:350px;background:white;border:1px solid #d2691e;border-radius:8px;max-height:500px;overflow-y:auto;display:none;z-index:1000;}
 .cart-item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd;align-items:center;}
+.qty-btns{display:flex;align-items:center;gap:5px;}
+.qty-btns button{padding:4px 8px;background:#d2691e;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:bold;}
 .cart-total{padding:8px;font-weight:600;text-align:right;}
 .send-whatsapp{width:100%;background:#25D366;color:white;border:none;padding:8px;border-radius:5px;cursor:pointer;font-weight:600;margin-top:5px;}
-nav{display:flex;justify-content:center;flex-wrap:wrap;margin-bottom:30px;}
-nav a{color:#d2691e;padding:15px 25px;font-weight:600;text-decoration:none;}
-nav a:hover{color:#b35412;}
-footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:40px;}
 </style>
 </head>
 <body>
@@ -42,15 +43,12 @@ footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:
 <section id="about">
 <h2>About Us</h2>
 <p style="text-align:center;max-width:700px;margin:auto;">
-Prince Café is a popular restaurant on GT Road Hassan Abdal known for BBQ, fried fish, karahi, and traditional Pakistani food. We serve fresh, high-quality dishes with authentic flavors.
-</p>
-<p style="text-align:center;max-width:700px;margin:auto;margin-top:10px;">
-Why Choose Us: Fresh Ingredients, Traditional Recipes, Quick Home Delivery, Friendly Staff, Hygienic Environment.
+Prince Café is a popular restaurant on GT Road Hassan Abdal known for BBQ, fried fish, karahi, and traditional Pakistani food. Click below to explore our menu categories and place your order.
 </p>
 </section>
 
 <section id="menu">
-<h2>Click Below to Order</h2>
+<h2>Menu Categories</h2>
 <div class="menu-grid">
 <div class="menu-card" onclick="location.href='pakistani.html'">Pakistani Cuisine</div>
 <div class="menu-card" onclick="location.href='fish.html'">Fish</div>
@@ -72,77 +70,79 @@ Why Choose Us: Fresh Ingredients, Traditional Recipes, Quick Home Delivery, Frie
 
 <section id="contact">
 <h2>Location</h2>
-<iframe src="https://maps.google.com/maps?q=Prince%20Cafe%20Hassan%20Abdal&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+<iframe src="https://maps.google.com/maps?q=Prince%20Cafe%20Hassan%20Abdal&t=&z=15&ie=UTF8&iwloc=&output=embed" style="width:100%;height:350px;border:none;border-radius:10px;"></iframe>
 </section>
 
-<footer>
+<footer style="background:#d2691e;color:white;text-align:center;padding:20px;">
 © 2026 Prince Café Hassan Abdal
 </footer>
 
 <script>
-// Persistent cart
+// ----- Persistent Cart -----
 let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
 
-// Refresh cart
+// Update cart modal & count
 function refreshCartUI(){
     const cartItemsDiv = document.querySelector('.cart-items');
-    cartItemsDiv.innerHTML = '';
-    let total = 0;
-    cart = cart.map(i => ({name:i.name,type:i.type||'',price:i.price||0,qty:i.qty||0}));
-    cart.forEach((i,index)=>{
-        total += i.price*i.qty;
+    cartItemsDiv.innerHTML='';
+    let total=0;
+    cart.forEach((item,index)=>{
+        total += (item.price || 0) * item.qty;
         cartItemsDiv.innerHTML += `
         <div class="cart-item">
-            <span>${i.name} (${i.type})</span>
+            <span>${item.name}${item.type ? ' ('+item.type+')' : ''}</span>
             <div class="qty-btns">
                 <button class="minus-cart" data-index="${index}">-</button>
-                <span>${i.qty}</span>
+                <span>${item.qty}</span>
                 <button class="plus-cart" data-index="${index}">+</button>
             </div>
-            <span>${i.price*i.qty}/-</span>
+            <span>${(item.price || 0)*item.qty}/-</span>
         </div>`;
     });
-    document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
+    document.querySelector('.cart-count').innerText = cart.reduce((sum,i)=>sum+i.qty,0);
     document.querySelector('.cart-total').innerText = 'Total: '+total+'/-';
-    localStorage.setItem('princeCafeCart', JSON.stringify(cart));
+    localStorage.setItem('princeCafeCart',JSON.stringify(cart));
 
+    // Plus/minus inside modal
     document.querySelectorAll('.plus-cart').forEach(btn=>{
         btn.onclick = ()=>{
-            const idx = parseInt(btn.dataset.index);
+            const idx = btn.dataset.index;
             cart[idx].qty++;
             refreshCartUI();
-        }
+        };
     });
     document.querySelectorAll('.minus-cart').forEach(btn=>{
         btn.onclick = ()=>{
-            const idx = parseInt(btn.dataset.index);
+            const idx = btn.dataset.index;
             cart[idx].qty--;
             if(cart[idx].qty<=0) cart.splice(idx,1);
             refreshCartUI();
-        }
+        };
     });
 }
 
-// Toggle cart
-document.querySelector('.cart-btn').addEventListener('click', ()=>{
-    const m = document.querySelector('.cart-modal');
-    m.style.display = (m.style.display==='none' || m.style.display==='') ? 'block' : 'none';
+// Toggle cart modal
+document.querySelector('.cart-btn').addEventListener('click',()=>{
+    const modal = document.querySelector('.cart-modal');
+    modal.style.display = (modal.style.display==='block') ? 'none' : 'block';
 });
 
-// WhatsApp order
-document.querySelector('.send-whatsapp').addEventListener('click', ()=>{
+// WhatsApp send
+document.querySelector('.send-whatsapp').addEventListener('click',()=>{
     if(cart.length===0){alert('Cart empty'); return;}
-    let msg = "Home Delivery Order:%0A";
-    let total = 0;
+    let msg="Home Delivery Order:%0A";
+    let total=0;
     cart.forEach(i=>{
-        msg += `${i.name} (${i.type||''}) x${i.qty} = ${i.price*i.qty}/-%0A`;
-        total += i.price*i.qty;
+        msg += `• ${i.name}${i.type ? ' ('+i.type+')' : ''} x${i.qty} = ${(i.price||0)*i.qty}/-%0A`;
+        total += (i.price||0)*i.qty;
     });
-    msg += `Total: ${total}/-%0A`;
+    msg += `Total: ${total}/-`;
     window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
 });
 
+// Initial load
 refreshCartUI();
 </script>
+
 </body>
-  </html>
+</html>
