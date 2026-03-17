@@ -69,7 +69,7 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal known for BBQ, frie
 
 <section id="contact">
 <h2>Location</h2>
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.414441234567!2d72.684!3d33.821" style="width:100%;height:350px;border:none;border-radius:10px;"></iframe>
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.42531340156!2d72.693444!3d33.827111!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDQ5JzM3LjYiTiA3MsKwNDEnMzYuNCJF!5e0!3m2!1sen!2s!4v1650000000000!5m2!1sen!2s" style="width:100%;height:350px;border:none;border-radius:10px;"></iframe>
 </section>
 
 <footer style="background:#d2691e;color:white;text-align:center;padding:20px;">
@@ -77,7 +77,6 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal known for BBQ, frie
 </footer>
 
 <script>
-// Logic to handle persistent cart sync
 const STORAGE_KEY = 'princeCafeCart';
 
 function getCartData() {
@@ -126,7 +125,6 @@ function refreshCartUI() {
     totalLabel.innerText = 'Total: ' + total + '/-';
 }
 
-// Global function for the plus/minus buttons in index.html
 window.updateMainQty = function(index, change) {
     let cart = getCartData();
     if(cart[index]) {
@@ -139,18 +137,15 @@ window.updateMainQty = function(index, change) {
     }
 };
 
-// Toggle Modal
 document.getElementById('mainCartBtn').onclick = function() {
     const modal = document.getElementById('mainCartModal');
-    refreshCartUI(); // Re-sync before showing
+    refreshCartUI();
     modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
 };
 
-// WhatsApp Order Formatting
 document.querySelector('.send-whatsapp').onclick = function() {
     const cart = getCartData();
     if(cart.length === 0) return alert('Cart is empty');
-    
     let msg = "Home Delivery Order:%0A";
     let total = 0;
     cart.forEach(i => {
@@ -161,12 +156,20 @@ document.querySelector('.send-whatsapp').onclick = function() {
     window.open(`https://wa.me/923302522258?text=${msg}`, '_blank');
 };
 
-// Listen for updates from other menu pages while this tab is open
+// --- THE CRITICAL FIX FOR GITHUB PAGES / BACK BUTTON ---
+
+// This event triggers every time the page becomes visible (including back button)
+window.addEventListener('pageshow', function(event) {
+    // If we're coming from the cache (the "back" button), sync the cart
+    refreshCartUI();
+});
+
+// Also listen for storage changes if multiple tabs are open
 window.addEventListener('storage', (e) => {
     if (e.key === STORAGE_KEY) refreshCartUI();
 });
 
-// Run immediately on load
+// Run on initial load
 refreshCartUI();
 </script>
 
