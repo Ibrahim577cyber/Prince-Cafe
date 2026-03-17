@@ -6,73 +6,36 @@
 <title>Pakistani Cuisine - Prince Café</title>
 <style>
 body{margin:0;padding:0;font-family:sans-serif;background:#fff;}
-/* Header with image */
-.menu-header {
-  position: relative;
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
-}
-
-.menu-header img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.header-overlay {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.header-overlay h1 {
-  color: #fff;
-  font-size: 3rem;
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
-  padding: 10px 20px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.1);
-}
-
-/* Back button */
-.back-btn{margin:15px;display:inline-block;padding:8px 12px;background:#d2691e;color:white;border-radius:5px;text-decoration:none;font-weight:600;cursor:pointer;}
-
-/* Menu items */
 .menu-section{padding:20px;}
 .item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #ddd;}
 .item-name{flex:1;min-width:150px;font-weight:600;}
 .qty-btns{display:flex;align-items:center;gap:5px;width:100px;justify-content:flex-end;}
 .qty-btns button{padding:4px 8px;cursor:pointer;font-weight:bold;background:#d2691e;color:white;border:none;border-radius:4px;}
 .qty-btns span{min-width:20px;text-align:center;display:inline-block;}
-
-/* Cart */
 .cart-btn{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:10px 15px;border-radius:50px;cursor:pointer;z-index:1000;}
 .cart-count{background:white;color:#25D366;padding:2px 6px;border-radius:50%;margin-left:5px;font-weight:700;}
 .cart-modal{position:fixed;bottom:70px;right:20px;width:350px;background:white;border:1px solid #d2691e;border-radius:8px;max-height:500px;overflow-y:auto;display:none;z-index:1000;}
 .cart-item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd;align-items:center;}
 .cart-total{padding:8px;font-weight:600;text-align:right;}
 .send-whatsapp{width:100%;background:#25D366;color:white;border:none;padding:8px;border-radius:5px;cursor:pointer;font-weight:600;margin-top:5px;}
+.back-btn{margin:15px;display:inline-block;padding:8px 12px;background:#d2691e;color:white;border-radius:5px;text-decoration:none;font-weight:600;cursor:pointer;}
+.menu-header{position:relative;width:100%;height:250px;overflow:hidden;}
+.menu-header img{width:100%;height:100%;object-fit:cover;}
+.header-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;}
+.header-overlay h1{color:#fff;font-size:3rem;text-shadow:1px 1px 5px rgba(0,0,0,0.7);padding:10px 20px;border-radius:10px;background:rgba(255,255,255,0.1);}
 </style>
 </head>
 <body>
 
 <header class="menu-header">
-  <img src="https://image2url.com/r2/default/images/1773668429937-012acea9-7449-4cf7-9c14-5f0124cfa157.webp" alt="Pakistani Cuisine">
-  <div class="header-overlay">
-    <h1>Pakistani Cuisine</h1>
-  </div>
+<img src="https://image2url.com/r2/default/images/1773668429937-012acea9-7449-4cf7-9c14-5f0124cfa157.webp" alt="Pakistani Cuisine">
+<div class="header-overlay"><h1>Pakistani Cuisine</h1></div>
 </header>
 
 <button class="back-btn" onclick="window.history.back()">&#8592; Back</button>
 
 <div class="menu-section" id="menu-section"></div>
 
-<!-- Persistent Cart -->
 <div class="cart-btn">Cart <span class="cart-count">0</span></div>
 <div class="cart-modal">
   <div class="cart-items"></div>
@@ -81,7 +44,7 @@ body{margin:0;padding:0;font-family:sans-serif;background:#fff;}
 </div>
 
 <script>
-// Full Pakistani Cuisine menu
+// Pakistani menu items
 const menuItems=[
 {name:'Mutton Qorma',type:'Half',price:630},{name:'Mutton Qorma',type:'Full',price:650},
 {name:'Chicken White Karahi',type:'Half',price:580},{name:'Chicken White Karahi',type:'Full',price:600},
@@ -97,10 +60,10 @@ const menuItems=[
 {name:'Chicken Pulao',type:'Half',price:320},{name:'Chicken Pulao',type:'Full',price:420}
 ];
 
-// Persistent cart across pages
+// Persistent cart
 let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
 
-// Render menu items
+// Render menu
 const menuSection=document.getElementById('menu-section');
 menuItems.forEach((item,index)=>{
     const div=document.createElement('div');
@@ -114,52 +77,32 @@ menuItems.forEach((item,index)=>{
     </div>`;
     menuSection.appendChild(div);
 
-    const plusBtn = div.querySelector('.plus-btn');
-    const minusBtn = div.querySelector('.minus-btn');
-
-    plusBtn.addEventListener('click',()=>{
-        addToCart(item.name,item.type,item.price);
-        refreshQtyDisplay();
-    });
-
-    minusBtn.addEventListener('click',()=>{
-        decreaseCart(item.name,item.type);
-        refreshQtyDisplay();
-    });
+    div.querySelector('.plus-btn').onclick = ()=>{
+        const existing = cart.find(i=>i.name===item.name && i.type===item.type);
+        if(existing) existing.qty++;
+        else cart.push({name:item.name,type:item.type,price:item.price,qty:1});
+        localStorage.setItem('princeCafeCart',JSON.stringify(cart));
+        refreshCartUI();
+        document.getElementById('qty-'+index).innerText = cart.find(i=>i.name===item.name && i.type===item.type).qty;
+    };
+    div.querySelector('.minus-btn').onclick = ()=>{
+        const existing = cart.find(i=>i.name===item.name && i.type===item.type);
+        if(existing){existing.qty--; if(existing.qty<=0) cart = cart.filter(i=>i!==existing);}
+        localStorage.setItem('princeCafeCart',JSON.stringify(cart));
+        refreshCartUI();
+        const existingQty = cart.find(i=>i.name===item.name && i.type===item.type);
+        document.getElementById('qty-'+index).innerText = existingQty ? existingQty.qty : 0;
+    };
 });
 
-// Cart functions
-function addToCart(name,type,price){
-    const existing = cart.find(i=>i.name===name && i.type===type);
-    if(existing) existing.qty++;
-    else cart.push({name,type,price,qty:1});
-    refreshCartUI();
-}
-
-function decreaseCart(name,type){
-    const existing = cart.find(i=>i.name===name && i.type===type);
-    if(existing){
-        existing.qty--;
-        if(existing.qty<=0) cart=cart.filter(i=>i!==existing);
-    }
-    refreshCartUI();
-}
-
-function refreshQtyDisplay(){
-    menuItems.forEach((item,index)=>{
-        const existing=cart.find(i=>i.name===item.name && i.type===item.type);
-        document.getElementById('qty-'+index).innerText = existing? existing.qty:0;
-    });
-}
-
-// Refresh cart UI (interactive)
+// Cart UI
 function refreshCartUI(){
-    const cartItemsDiv=document.querySelector('.cart-items');
-    cartItemsDiv.innerHTML='';
-    let total=0;
+    const cartItemsDiv = document.querySelector('.cart-items');
+    cartItemsDiv.innerHTML = '';
+    let total = 0;
     cart.forEach((i,index)=>{
-        total+=i.price*i.qty;
-        cartItemsDiv.innerHTML+=`
+        total += i.price*i.qty;
+        cartItemsDiv.innerHTML += `
         <div class="cart-item">
             <span>${i.name} (${i.type})</span>
             <div class="qty-btns">
@@ -170,49 +113,35 @@ function refreshCartUI(){
             <span>${i.price*i.qty}/-</span>
         </div>`;
     });
-    document.querySelector('.cart-count').innerText=cart.reduce((s,i)=>s+i.qty,0);
-    document.querySelector('.cart-total').innerText='Total: '+total+'/-';
-    localStorage.setItem('princeCafeCart',JSON.stringify(cart));
+    document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
+    document.querySelector('.cart-total').innerText = 'Total: '+total+'/-';
+    localStorage.setItem('princeCafeCart', JSON.stringify(cart));
 
-    document.querySelectorAll('.plus-cart').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-            const idx=parseInt(btn.getAttribute('data-index'));
-            cart[idx].qty++;
-            refreshCartUI();
-        });
-    });
-    document.querySelectorAll('.minus-cart').forEach(btn=>{
-        btn.addEventListener('click',()=>{
-            const idx=parseInt(btn.getAttribute('data-index'));
-            cart[idx].qty--;
-            if(cart[idx].qty<=0) cart.splice(idx,1);
-            refreshCartUI();
-        });
-    });
+    document.querySelectorAll('.plus-cart').forEach(btn=>{btn.onclick=()=>{cart[btn.dataset.index].qty++; refreshCartUI();}});
+    document.querySelectorAll('.minus-cart').forEach(btn=>{btn.onclick=()=>{cart[btn.dataset.index].qty--; if(cart[btn.dataset.index].qty<=0) cart.splice(btn.dataset.index,1); refreshCartUI();}});
 }
 
-// Cart modal toggle
-document.querySelector('.cart-btn').addEventListener('click',()=>{
-    const m=document.querySelector('.cart-modal');
-    m.style.display=m.style.display==='none'?'block':'none';
-});
+// Toggle cart modal
+document.querySelector('.cart-btn').onclick = ()=>{
+    const m = document.querySelector('.cart-modal');
+    m.style.display = (m.style.display==='none'||m.style.display==='')?'block':'none';
+};
 
-// WhatsApp send
-document.querySelector('.send-whatsapp').addEventListener('click',()=>{
+// WhatsApp order
+document.querySelector('.send-whatsapp').onclick = ()=>{
     if(cart.length===0){alert('Cart empty'); return;}
-    let msg="Order:%0A";
-    let total=0;
+    let msg = "Home Delivery Order:%0A";
+    let total = 0;
     cart.forEach(i=>{
-        msg+=`${i.name} (${i.type}) x${i.qty} = ${i.price*i.qty}/-%0A`;
-        total+=i.price*i.qty;
+        msg += `${i.name} (${i.type||''}) x${i.qty} = ${i.price*i.qty}/-%0A`;
+        total += i.price*i.qty;
     });
-    msg+=`Total: ${total}/-`;
+    msg += `Total: ${total}/-%0A`;
     window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
-});
+};
 
-// Initialize
 refreshCartUI();
-refreshQtyDisplay();
 </script>
+
 </body>
 </html>
