@@ -46,12 +46,12 @@ footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:
 <section id="about">
 <h2>About Us</h2>
 <p style="text-align:center;max-width:700px;margin:auto;">
-Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fried fish, karahi, and traditional Pakistani cuisine. Fresh ingredients and authentic flavors make every meal memorable.
+Prince Café is a popular restaurant on GT Road Hassan Abdal known for BBQ, fried fish, karahi, and traditional Pakistani food. We provide dine-in, takeaway, and delivery services. Quality and hygiene are our top priorities.
 </p>
 </section>
 
 <section id="menu">
-<h2>Menu Categories</h2>
+<h2>Click Below to Order</h2>
 <div class="menu-grid">
 <div class="menu-card" onclick="location.href='pakistani.html'">Pakistani Cuisine</div>
 <div class="menu-card" onclick="location.href='fish.html'">Fish</div>
@@ -63,12 +63,23 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fri
 </div>
 </section>
 
+<section id="why-choose">
+<h2>Why Choose Us?</h2>
+<ul style="max-width:700px;margin:auto;list-style:none;padding:0;">
+<li>✅ Fresh and high-quality ingredients</li>
+<li>✅ Authentic Pakistani taste</li>
+<li>✅ Hygienic kitchen and staff</li>
+<li>✅ Friendly and fast service</li>
+<li>✅ Delivery and takeaway options</li>
+</ul>
+</section>
+
 <!-- CART (persistent across menu pages) -->
 <div class="cart-btn">Cart <span class="cart-count">0</span></div>
 <div class="cart-modal">
   <div class="cart-items"></div>
   <div class="cart-total">Total: 0/-</div>
-  <button class="send-whatsapp">Send Order via WhatsApp</button>
+  <button class="send-whatsapp">Send Home Delivery Order via WhatsApp</button>
 </div>
 
 <section id="contact">
@@ -81,69 +92,75 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fri
 </footer>
 
 <script>
-// Persistent cart (shared with menu pages)
+// Load persistent cart from localStorage
 let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
 
+// Refresh cart modal
 function refreshCartUI(){
-  cart = JSON.parse(localStorage.getItem('princeCafeCart')) || []; // sync each time
+  cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
   const cartItemsDiv = document.querySelector('.cart-items');
   cartItemsDiv.innerHTML='';
-  let total=0;
+  let total = 0;
+
   cart.forEach((i,index)=>{
     total += i.price*i.qty;
     cartItemsDiv.innerHTML += `
-    <div class="cart-item">
-      <span>${i.name} (${i.type || 'N/A'})</span>
-      <div class="qty-btns">
-        <button class="minus-cart" data-index="${index}">-</button>
-        <span>${i.qty}</span>
-        <button class="plus-cart" data-index="${index}">+</button>
+      <div class="cart-item">
+        <span>${i.name} (${i.type || ''})</span>
+        <div class="qty-btns">
+          <button class="minus-cart" data-index="${index}">-</button>
+          <span>${i.qty}</span>
+          <button class="plus-cart" data-index="${index}">+</button>
+        </div>
+        <span>${i.price*i.qty}/-</span>
       </div>
-      <span>${i.price*i.qty}/-</span>
-    </div>`;
+    `;
   });
+
   document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
   document.querySelector('.cart-total').innerText = 'Total: '+total+'/-';
   localStorage.setItem('princeCafeCart',JSON.stringify(cart));
 
   document.querySelectorAll('.plus-cart').forEach(btn=>{
-    btn.onclick = ()=>{ cart[parseInt(btn.dataset.index)].qty++; refreshCartUI(); };
+    btn.onclick = ()=>{
+      const idx = parseInt(btn.dataset.index);
+      cart[idx].qty++;
+      refreshCartUI();
+    };
   });
   document.querySelectorAll('.minus-cart').forEach(btn=>{
     btn.onclick = ()=>{
       const idx = parseInt(btn.dataset.index);
       cart[idx].qty--;
-      if(cart[idx].qty<=0) cart.splice(idx,1);
+      if(cart[idx].qty <= 0) cart.splice(idx,1);
       refreshCartUI();
     };
   });
 }
 
-// Toggle cart modal
+// Cart modal toggle
 document.querySelector('.cart-btn').addEventListener('click',()=>{
-  refreshCartUI(); // ensure latest cart
-  const m=document.querySelector('.cart-modal');
+  const m = document.querySelector('.cart-modal');
   m.style.display = (m.style.display==='none' || m.style.display==='')?'block':'none';
 });
 
-// WhatsApp order
+// WhatsApp send
 document.querySelector('.send-whatsapp').addEventListener('click',()=>{
-  if(cart.length===0){alert('Cart empty');return;}
-  let msg="Hello Prince Café, I want to place a Home Delivery Order:%0A";
+  if(cart.length===0){alert('Cart empty'); return;}
+  let msg="Home Delivery Order:%0A";
   let total=0;
   cart.forEach(i=>{
-    msg += `${i.name} (${i.type || 'N/A'}) x${i.qty} = ${i.price*i.qty}/-%0A`;
+    const typeText = i.type? i.type : '';
+    msg += `${i.name} (${typeText}) x${i.qty} = ${i.price*i.qty}/-%0A`;
     total += i.price*i.qty;
   });
-  msg += `Total: ${total}/-`;
+  msg += `Total: ${total}/-%0A`;
   window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
 });
 
-// Sync cart when page gains focus
-window.addEventListener("focus", refreshCartUI);
-
-// Initial load
+// Initialize cart
 refreshCartUI();
 </script>
+
 </body>
   </html>
