@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prince Café - Hassan Abdal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#fff8f0;color:#333;line-height:1.6;}
+header{
+  background:url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  height:300px; display:flex; align-items:center; justify-content:center;
+}
+header h1{color:white;font-size:3rem;background:rgba(0,0,0,0.6);padding:15px 30px;border-radius:8px;text-align:center;}
+nav{background:#d2691e;display:flex;justify-content:center;flex-wrap:wrap;}
+nav a{color:white;padding:15px 25px;font-weight:600;text-decoration:none;}
+nav a:hover{background:#b35412;}
+section{padding:50px 20px;max-width:1100px;margin:auto;}
+section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
+.features ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:15px;}
+.features li{background:#f4e1d2;padding:12px 25px;border-radius:25px;font-weight:bold;}
+.features li:hover{background:#d2691e;color:white;cursor:pointer;}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
+.menu-card{background:#fff1e0;padding:20px;border-radius:12px;text-align:center;font-weight:500;cursor:pointer;transition:0.3s;}
+.menu-card:hover{background:#d2691e;color:white;}
+.cart-btn{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:12px 20px;border-radius:50px;cursor:pointer;z-index:1000;}
+.cart-count{background:white;color:#25D366;padding:2px 6px;border-radius:50%;margin-left:5px;font-weight:700;}
+.cart-modal{position:fixed;bottom:70px;right:20px;width:350px;background:white;border:1px solid #d2691e;border-radius:8px;max-height:500px;overflow-y:auto;display:none;z-index:1000;}
+.cart-item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #ddd;align-items:center;}
+.cart-total{padding:8px;font-weight:600;text-align:right;}
+.qty-btns{display:flex;align-items:center;gap:5px;}
+.qty-btns button{padding:4px 8px;cursor:pointer;font-weight:bold;background:#d2691e;color:white;border:none;border-radius:4px;}
+.qty-btns span{min-width:20px;text-align:center;display:inline-block;}
+.send-whatsapp{width:100%;background:#25D366;color:white;border:none;padding:8px;border-radius:5px;cursor:pointer;font-weight:600;margin-top:5px;}
+iframe{width:100%;height:350px;border:none;border-radius:10px;margin-top:20px;}
+footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:40px;}
+@media(max-width:768px){
+  .menu-grid{grid-template-columns:1fr;}
+  .features ul{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Prince Café</h1>
+</header>
+
+<nav>
+<a href="#about">About</a>
+<a href="#order">Order Now</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<section id="about">
+<h2>About Us</h2>
+<p style="text-align:center;max-width:700px;margin:auto;">
+Prince Café is a renowned restaurant on GT Road, Hassan Abdal. Famous for BBQ, fried fish, karahi, Pakistani curries, biryani, and fresh beverages. We provide a cozy environment for families and friends.
+</p>
+</section>
+
+<section id="features">
+<h2>Why Choose Us?</h2>
+<ul class="features">
+<li>Authentic Pakistani Cuisine</li>
+<li>Fresh Ingredients</li>
+<li>Fast & Friendly Service</li>
+<li>Delivery & Takeaway</li>
+<li>Clean & Cozy Ambience</li>
+<li>Secure Payment Options</li>
+</ul>
+</section>
+
+<section id="order">
+<h2>Click Below to Order</h2>
+<div class="menu-grid">
+<div class="menu-card" onclick="location.href='pakistani.html'">Pakistani Cuisine</div>
+<div class="menu-card" onclick="location.href='fish.html'">Fish</div>
+<div class="menu-card" onclick="location.href='fastfood.html'">Fast Food</div>
+<div class="menu-card" onclick="location.href='sweets.html'">Sweets</div>
+<div class="menu-card" onclick="location.href='tea.html'">Tea & Coffee</div>
+<div class="menu-card" onclick="location.href='salad.html'">Salad & Bread</div>
+<div class="menu-card" onclick="location.href='beverages.html'">Beverages</div>
+</div>
+</section>
+
+<!-- CART -->
+<div class="cart-btn">Cart <span class="cart-count">0</span></div>
+<div class="cart-modal">
+  <div class="cart-items"></div>
+  <div class="cart-total">Total: 0/-</div>
+  <button class="send-whatsapp">Send Order via WhatsApp</button>
+</div>
+
+<section id="contact">
+<h2>Location</h2>
+<iframe src="https://maps.google.com/maps?q=Prince%20Cafe%20Hassan%20Abdal&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+</section>
+
+<footer>
+© 2026 Prince Café Hassan Abdal
+</footer>
+
+<script>
+// Persistent cart
+let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
+
+// Refresh cart UI
+function refreshCartUI(){
+  const cartItemsDiv = document.querySelector('.cart-items');
+  cartItemsDiv.innerHTML='';
+  let total=0;
+  cart.forEach((i,index)=>{
+    total += i.price*i.qty || 0;
+    cartItemsDiv.innerHTML += `
+    <div class="cart-item">
+      <span>${i.name} (${i.type || ''})</span>
+      <div class="qty-btns">
+        <button class="minus-cart" data-index="${index}">-</button>
+        <span>${i.qty}</span>
+        <button class="plus-cart" data-index="${index}">+</button>
+      </div>
+      <span>${i.price*i.qty || 0}/-</span>
+    </div>`;
+  });
+  document.querySelector('.cart-count').innerText=cart.reduce((s,i)=>s+i.qty,0);
+  document.querySelector('.cart-total').innerText='Total: '+total+'/-';
+  localStorage.setItem('princeCafeCart',JSON.stringify(cart));
+
+  // Add event listeners
+  document.querySelectorAll('.plus-cart').forEach(btn=>{
+    btn.onclick=()=>{
+      const idx=parseInt(btn.getAttribute('data-index'));
+      cart[idx].qty++;
+      refreshCartUI();
+    };
+  });
+  document.querySelectorAll('.minus-cart').forEach(btn=>{
+    btn.onclick=()=>{
+      const idx=parseInt(btn.getAttribute('data-index'));
+      cart[idx].qty--;
+      if(cart[idx].qty<=0) cart.splice(idx,1);
+      refreshCartUI();
+    };
+  });
+}
+
+// Cart modal toggle
+document.querySelector('.cart-btn').onclick=()=>{
+  const m=document.querySelector('.cart-modal');
+  m.style.display = (m.style.display==='none' || m.style.display==='')?'block':'none';
+};
+
+// WhatsApp order (Home Delivery)
+document.querySelector('.send-whatsapp').onclick=()=>{
+  if(cart.length===0){alert('Cart empty'); return;}
+  let msg="Home Delivery Order:%0A";
+  let total=0;
+  cart.forEach(i=>{
+    const type = i.type ? i.type : '';
+    msg+=`${i.name} (${type}) x${i.qty} = ${i.price*i.qty || 0}/-%0A`;
+    total+=i.price*i.qty || 0;
+  });
+  msg+=`Total: ${total}/-`;
+  window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
+};
+
+// Initial load
+refreshCartUI();
+</script>
+
+</body>
+</html>
