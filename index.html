@@ -29,7 +29,7 @@ section h2{text-align:center;color:#d2691e;margin-bottom:35px;}
 .cart-item .qty-btns button{padding:4px 8px;cursor:pointer;font-weight:bold;background:#d2691e;color:white;border:none;border-radius:4px;}
 .cart-total{padding:8px;font-weight:600;text-align:right;}
 .send-whatsapp{width:100%;background:#25D366;color:white;border:none;padding:8px;border-radius:5px;cursor:pointer;font-weight:600;margin-top:5px;}
-iframe{width:100%;height:350px;border:none;border-radius:10px;margin-top:20px;}
+ul{line-height:1.8;padding-left:20px;}
 @media(min-width:1200px){
   .menu-grid{grid-template-columns:repeat(3,1fr);}
 }
@@ -51,7 +51,7 @@ footer{background:#d2691e;color:white;text-align:center;padding:25px;margin-top:
 <section id="about">
 <h2>About Us</h2>
 <p style="text-align:center;max-width:700px;margin:auto;">
-Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fried fish, karahi, traditional Pakistani food, and a cozy family-friendly atmosphere. We offer dine-in, takeaway, and delivery options daily.
+Prince Café is a famous restaurant on GT Road Hassan Abdal, serving BBQ, fried fish, karahi, Pakistani traditional dishes, and fast food. We provide dine-in, takeaway, and home delivery services daily.
 </p>
 </section>
 
@@ -70,7 +70,7 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fri
 
 <section id="why-choose-us">
 <h2>Why Choose Us?</h2>
-<ul style="max-width:700px;margin:auto;padding-left:20px;line-height:1.8;">
+<ul style="max-width:700px;margin:auto;">
 <li>Fresh ingredients & authentic Pakistani flavors</li>
 <li>Friendly staff & cozy dining environment</li>
 <li>Fast service & reliable home delivery</li>
@@ -97,7 +97,7 @@ Prince Café is a popular restaurant on GT Road Hassan Abdal, known for BBQ, fri
 </footer>
 
 <script>
-// Load persistent cart (same across all menu pages)
+// Load persistent cart (shared across menu pages)
 let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
 
 // Update cart UI
@@ -109,7 +109,7 @@ function refreshCartUI(){
     total += i.price*i.qty;
     cartItemsDiv.innerHTML += `
     <div class="cart-item">
-      <span>${i.name} (${i.type || ''})</span>
+      <span>${i.name} (${i.type || 'N/A'})</span>
       <div class="qty-btns">
         <button class="minus-cart" data-index="${index}">-</button>
         <span>${i.qty}</span>
@@ -119,24 +119,21 @@ function refreshCartUI(){
     </div>`;
   });
 
-  document.querySelector('.cart-count').innerText=cart.reduce((s,i)=>s+i.qty,0);
-  document.querySelector('.cart-total').innerText='Total: '+total+'/-';
+  document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
+  document.querySelector('.cart-total').innerText = 'Total: '+total+'/-';
   localStorage.setItem('princeCafeCart',JSON.stringify(cart));
 
+  // Attach plus/minus events
   document.querySelectorAll('.plus-cart').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const idx = parseInt(btn.getAttribute('data-index'));
-      cart[idx].qty++;
-      refreshCartUI();
-    });
+    btn.onclick = ()=>{ cart[parseInt(btn.dataset.index)].qty++; refreshCartUI(); };
   });
   document.querySelectorAll('.minus-cart').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const idx = parseInt(btn.getAttribute('data-index'));
+    btn.onclick = ()=>{
+      const idx = parseInt(btn.dataset.index);
       cart[idx].qty--;
       if(cart[idx].qty<=0) cart.splice(idx,1);
       refreshCartUI();
-    });
+    };
   });
 }
 
@@ -159,7 +156,7 @@ document.querySelector('.send-whatsapp').addEventListener('click',()=>{
   window.open(`https://wa.me/923302522258?text=${msg}`,'_blank');
 });
 
-// Homepage cart sync with other pages
+// Sync homepage cart count with other pages
 function updateCartCount(){
   let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
   document.querySelector('.cart-count').innerText = cart.reduce((s,i)=>s+i.qty,0);
@@ -167,7 +164,7 @@ function updateCartCount(){
 updateCartCount();
 window.addEventListener("storage", updateCartCount);
 
-// Initial cart render
+// Initial render
 refreshCartUI();
 </script>
 
