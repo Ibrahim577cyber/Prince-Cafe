@@ -169,6 +169,17 @@ document.querySelector('.send-whatsapp').onclick=()=>{
 // Initial load
 refreshCartUI();
 </script>
+function updateCartCount(){
+  let cart = JSON.parse(localStorage.getItem('princeCafeCart')) || [];
+  let total = 0;
 
+  cart.forEach(item=>{
+    total += item.qty;
+  });
+
+  document.querySelector('.cart-count').innerText = total;
+}
+
+updateCartCount();
 </body>
 </html>
